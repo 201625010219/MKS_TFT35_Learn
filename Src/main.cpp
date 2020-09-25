@@ -1,48 +1,13 @@
+
 /**
 1. FSMC 背光、片选、复位管脚对应；
 2.SPI FLASH/ AD7843 片选对应；
 3.FALA 控制管脚对应；
-  ******************************************************************************
-  * File Name          : main.c
-  * Description        : Main program body
-  ******************************************************************************
-  *
-  * Copyright (c) 2016 STMicroelectronics International N.V. 
-  * All rights reserved.
-  *
-  * Redistribution and use in source and binary forms, with or without 
-  * modification, are permitted, provided that the following conditions are met:
-  *
-  * 1. Redistribution of source code must retain the above copyright notice, 
-  *    this list of conditions and the following disclaimer.
-  * 2. Redistributions in binary form must reproduce the above copyright notice,
-  *    this list of conditions and the following disclaimer in the documentation
-  *    and/or other materials provided with the distribution.
-  * 3. Neither the name of STMicroelectronics nor the names of other 
-  *    contributors to this software may be used to endorse or promote products 
-  *    derived from this software without specific written permission.
-  * 4. This software, including modifications and/or derivative works of this 
-  *    software, must execute solely and exclusively on microcontroller or
-  *    microprocessor devices manufactured by or for STMicroelectronics.
-  * 5. Redistribution and use of this software other than as permitted under 
-  *    this license is void and will automatically terminate your rights under 
-  *    this license. 
-  *
-  * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
-  * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
-  * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
-  * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
-  * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
-  * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-  * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-  * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
-  * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-  * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
+**/
+
+
+/* Define --------------------------------------------------------------------*/
+
 #define MKSTFT70_FIRMWARE_VER	"V0.1.0"
 /* Includes ------------------------------------------------------------------*/
 
@@ -102,74 +67,56 @@
 #include "wifi_module.h"
 #include "tim.h"
 
-//extern void LCD_Init(void);
-
-/* USER CODE END Includes */
-
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE BEGIN PV */ 
-/* Private variables ---------------------------------------------------------*/
-
-/* USER CODE END PV */
-
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-void Error_Handler(void);
-static void MX_NVIC_Init(void);
-void MX_USB_HOST_Process(void);
-extern void wifi_looping();
-
-__IO uint32_t delaycnt1 = 0;
+/* Global --------------------------------------------------------------------*/
 
 volatile uint8_t repetier_repint_flag = 0;
-volatile int16_t logo_time = 0;
 volatile uint8_t get_temp_flag;
+volatile int16_t logo_time = 0;
+volatile uint32_t delaycnt1 = 0;
+volatile uint32_t TimeIncrease = 0;
 
+uint8_t wifi_init_flg = 0;
+uint8_t wifi_init_state = 0;
+uint8_t wifi_refresh_flg = 0, cloud_refresh_flg = 0;
 uint8_t link_mutex_detect_time;
 uint8_t  Get_Temperature_Flg = 0;
+uint8_t preview_no_display;
+uint8_t console_msg_print[128];
+uint8_t lineNumber = 0;
+uint8_t console_flag = 0;
+uint8_t update_msg_flag = 0;
+
 
 int32_t printer_state = PRINTER_NOT_CONNECT;
+uint32_t wifi_loop_cycle = 500;
 FILE_PRINT_STATE gCurFileState ;
 FIL *srcfp;
 PR_STATUS printerStaus = pr_idle;
-static FIL curFile;
+/* Functions -----------------------------------------------------------------*/
+void SystemClock_Config(void);
+void Error_Handler(void);
+void MX_USB_HOST_Process(void);
+/* Extern --------------------------------------------------------------------*/
 
+//extern void LCD_Init(void);
+extern void wifi_looping();
 extern char curFileName[150];
 extern uint32_t rePrintOffset;
 extern unsigned long fileOffset;
 extern CFG_ITMES gCfgItems;
 extern FATFS fs;
-
-volatile uint32_t TimeIncrease = 0;
 extern uint8_t from_flash_pic;
-
-uint32_t wifi_loop_cycle = 500;
 extern char wifi_check_time;
-uint8_t wifi_init_flg = 0;
-uint8_t wifi_init_state = 0;
-uint8_t wifi_refresh_flg = 0, cloud_refresh_flg = 0;
-
 extern u16 DeviceCode;
 
+/* Static --------------------------------------------------------------------*/
+
+static void MX_NVIC_Init(void);
+static FIL curFile;
 static uint32_t tick1,tick2;
 
-uint8_t preview_no_display;
-/************************************************end************************/
 
-/* USER CODE BEGIN PFP */
-/* Private function prototypes -----------------------------------------------*/
 
-/* USER CODE END PFP */
-
-/* USER CODE BEGIN 0 */
-
-/* USER CODE END 0 */
-
-uint8_t console_msg_print[128];
-uint8_t lineNumber = 0;
-uint8_t console_flag = 0;
-uint8_t update_msg_flag = 0;
 
 #if 1
   void console_show()
@@ -191,19 +138,12 @@ uint8_t update_msg_flag = 0;
   
 #endif
 
-  int main(void)
+int main(void)
 {
 
 	uint32_t i;
-    
-  /* USER CODE BEGIN 1 */
 	uint8_t filePathLen;       
   	
-  /* USER CODE END 1 */
-
-  /* MCU Configuration----------------------------------------------------------*/
-
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
   HAL_Init();
 
   /* Configure the system clock */
@@ -558,7 +498,7 @@ uint8_t update_msg_flag = 0;
 		while(1)
 		{
 			tick2 = getTick();
-			if((tick1 < tick2) && (getTickDiff(tick2, tick1)>=3000))
+			if((tick1 < tick2) && (getTickDiff(tick2, tick1)>=3000))   //判定时间小于59s 且差值大于3000
 			{
 				draw_ready_print();
 				logo_time = 0;

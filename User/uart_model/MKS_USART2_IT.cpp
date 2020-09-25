@@ -510,101 +510,99 @@ void mksUsart2Init(void)
 void mksUsart2IrqHandlerUser(void)
 {
 		unsigned char i;
-		if( USART2_SR & 0x0020)	//rx 
+		if( USART2_SR & 0x0020)				//接收中断
 		{
 				*(usart2Data.rxP++) = USART2_DR & 0xff;
 				USART2_SR &= 0xffdf;
 			
-				if(*(usart2Data.rxP-1) == '\n')		//0x0A 收到结束符
+				if(*(usart2Data.rxP-1) == '\n')		//0x0A 收到结束符  (由于上方对usart2Data.rxP++，所以在判定时应判定usart2Data.rxP -1 的位置)
 				{				
 					if(RePrintData.saveEnable)	getSavePosition();
 					if(gCfgItems.getzpos_enable == 1) getZPosition();//移动界面的Z轴显示值
-					if(usart2Data.usart2Rxbuf[0] =='w' &&  usart2Data.usart2Rxbuf[1] =='a' && usart2Data.usart2Rxbuf[2] =='i' &&  usart2Data.usart2Rxbuf[3] =='t')
-					{	//repetier 去掉接收到的 wait 字符
+
+					//repetier 去掉接收到的 wait 字符
+					if(	usart2Data.usart2Rxbuf[0] =='w' &&  
+						usart2Data.usart2Rxbuf[1] =='a' && 
+						usart2Data.usart2Rxbuf[2] =='i' &&  
+						usart2Data.usart2Rxbuf[3] =='t')
+					{	
 						usart2Data.rxP = &usart2Data.usart2Rxbuf[0];
 						wait_cnt++;
 						if(wait_cnt > 2)
+						{
 							firmwareType = repetier;
+						}
 					}
 					else
+					{
+						wait_cnt = 0;
+						//if(firmwareType != repetier)
+						usart2Data.timerCnt = 0; //定时器清零
+
+						switch(printerStaus)
 						{
-							wait_cnt = 0;
-							//if(firmwareType != repetier)
-								usart2Data.timerCnt = 0; //定时器清零
-							switch(printerStaus)
-							{
-								case pr_reprint:
-								case pr_working:	//打印中 pr_working = 1
-								case pr_pause:  //暂停 pr_pause = 2
-										switch(usart2Data.prWaitStatus)
-										{
-											case pr_wait_idle:			//0
-												pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);	//reretier
-												break;
-											case pr_wait_cmd:			//pr_wait_cmd=1 	命令队列等待回应
-												if((firmwareType == repetier))
+							case pr_reprint:
+							case pr_working:	//打印中 pr_working = 1
+							case pr_pause:  //暂停 pr_pause = 2
+									switch(usart2Data.prWaitStatus)
+									{
+										case pr_wait_idle:			//0
+											pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);	//reretier
+											break;
+										case pr_wait_cmd:			//pr_wait_cmd=1 	命令队列等待回应
+											if((firmwareType == repetier))
+											{
+												//在repetier固件里，对下面命令做接收完成响应之后才发
+												//下一条命令。
+												//M105
+												if((usart2Data.usart2Txbuf[0] == 'M')&&(usart2Data.usart2Txbuf[1] == '1')\
+												&&(usart2Data.usart2Txbuf[2] == '0')&&(usart2Data.usart2Txbuf[3] == '5'))
 												{
-													//在repetier固件里，对下面命令做接收完成响应之后才发
-													//下一条命令。
-													//M105
-													if((usart2Data.usart2Txbuf[0] == 'M')&&(usart2Data.usart2Txbuf[1] == '1')\
-													&&(usart2Data.usart2Txbuf[2] == '0')&&(usart2Data.usart2Txbuf[3] == '5'))
-													{
-															pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
-															//防止在加热的时候不断发下一条命令
-															if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')
-															{
-																	M105REC_OK_FLG=1;
-															}
-															//M105:
-															if((M105REC_OK_FLG == 1)&&(usart2Data.usart2Rxbuf[0] =='T' &&  usart2Data.usart2Rxbuf[1] ==':'))
-															{
-																M105REC_OK_FLG=0;
-																usart2Data.prWaitStatus = pr_wait_idle;
-																prTxNext();
-															}												
-													}
-													//M104/M109/M140/M190
-													else if((usart2Data.usart2Txbuf[0] == 'M')&&(usart2Data.usart2Txbuf[1] == '1')\
-													&&((usart2Data.usart2Txbuf[2] == '0')||(usart2Data.usart2Txbuf[2] == '4')\
-													||(usart2Data.usart2Txbuf[2] == '9'))\
-													&&((usart2Data.usart2Txbuf[3] == '0')||(usart2Data.usart2Txbuf[3] == '4')\
-													||(usart2Data.usart2Txbuf[3] == '9')))
-													{
 														pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
-														if((usart2Data.usart2Rxbuf[0] =='T')&&(usart2Data.usart2Rxbuf[1] =='a'))
-														{
-																usart2Data.prWaitStatus = pr_wait_idle;
-																prTxNext();
-														}
-													}
-													//M106/M107
-													else if((usart2Data.usart2Txbuf[0] == 'M')&&(usart2Data.usart2Txbuf[1] == '1')\
-													&&(usart2Data.usart2Txbuf[2] == '0')&&((usart2Data.usart2Txbuf[3] == '7')\
-													||(usart2Data.usart2Txbuf[3] == '6'))&&(FanSpeed_bak != gCfgItems.fanSpeed))
-													{
-														pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
-														if(usart2Data.usart2Rxbuf[0] =='F' &&  usart2Data.usart2Rxbuf[1] =='a')
-														{
-															usart2Data.prWaitStatus = pr_wait_idle;
-															prTxNext();
-														}
-													}
-													else
-													{	
-														pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
-														//M105:
+														//防止在加热的时候不断发下一条命令
 														if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')
 														{
+																M105REC_OK_FLG=1;
+														}
+														//M105:
+														if((M105REC_OK_FLG == 1)&&(usart2Data.usart2Rxbuf[0] =='T' &&  usart2Data.usart2Rxbuf[1] ==':'))
+														{
+															M105REC_OK_FLG=0;
 															usart2Data.prWaitStatus = pr_wait_idle;
 															prTxNext();
-														}
+														}												
+												}
+												//M104/M109/M140/M190
+												else if((usart2Data.usart2Txbuf[0] == 'M')&&(usart2Data.usart2Txbuf[1] == '1')\
+												&&((usart2Data.usart2Txbuf[2] == '0')||(usart2Data.usart2Txbuf[2] == '4')\
+												||(usart2Data.usart2Txbuf[2] == '9'))\
+												&&((usart2Data.usart2Txbuf[3] == '0')||(usart2Data.usart2Txbuf[3] == '4')\
+												||(usart2Data.usart2Txbuf[3] == '9')))
+												{
+													pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
+													if((usart2Data.usart2Rxbuf[0] =='T')&&(usart2Data.usart2Rxbuf[1] =='a'))
+													{
+															usart2Data.prWaitStatus = pr_wait_idle;
+															prTxNext();
 													}
-													
+												}
+												//M106/M107
+												else if((usart2Data.usart2Txbuf[0] == 'M') && 
+														(usart2Data.usart2Txbuf[1] == '1') &&
+														(usart2Data.usart2Txbuf[2] == '0') && 
+														((usart2Data.usart2Txbuf[3] == '7') ||
+														(usart2Data.usart2Txbuf[3] == '6'))&&
+														(FanSpeed_bak != gCfgItems.fanSpeed))
+												{
+													pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
+													if(usart2Data.usart2Rxbuf[0] =='F' &&  usart2Data.usart2Rxbuf[1] =='a')
+													{
+														usart2Data.prWaitStatus = pr_wait_idle;
+														prTxNext();
+													}
 												}
 												else
-												{
-													get_zoffset_value();
+												{	
 													pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
 													//M105:
 													if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')
@@ -612,59 +610,72 @@ void mksUsart2IrqHandlerUser(void)
 														usart2Data.prWaitStatus = pr_wait_idle;
 														prTxNext();
 													}
-												}												
-												break;
-											case pr_wait_data:
-
-												if(firmwareType != repetier)
-												{
-													if(resendProcess()) break;
-												}
-												else
-												{
-													if(resendProcess_repetier()) break;
 												}
 												
-												if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')	
-												{
-													if(recOkProcess()) 
-													{
-														usart2Data.resendCnt = 0;
-														usart2Data.prWaitStatus = pr_wait_idle;
-														prTxNext();
-													}
-													else	//ok : T xxx
-														pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
-												}
-												else //收到其他，push 到CMD队列 非OK
-													pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
-												
-												break;
-											default : break;
-										} //switch(usart2Data.prWaitStatus) 
-									break;
-								case pr_idle:		//	pr_idle=0				//非打印中 ,发送命令由外部查询gcodeCmdTxFIFO非空，启动发送
-								case pr_stop:		//	pr_stop=3
-										if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')
-										{
-											usart2Data.prWaitStatus = pr_wait_idle;
-											usart2Data.timer = timer_stop;		//0303
-											//sean 12.17
-											if((usart2Data.usart2Txbuf[0] =='G' &&  usart2Data.usart2Txbuf[1] =='2' && usart2Data.usart2Txbuf[2] =='8' && usart2Data.HasSendHomeG28 ==1)
-												|| (usart2Data.usart2Txbuf[0] =='N' &&  usart2Data.usart2Txbuf[1] =='-' && usart2Data.usart2Txbuf[2] =='1' && usart2Data.HasStopPrintSendG28 == 1))
-											{
-												usart2Data.HasStopPrintSendG28 = 0;
-												usart2Data.HasSendHomeG28 = 0;
 											}
-										}
-										pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
-										break;							
-								default :break;															
-								}//switch(printerStaus)
+											else
+											{
+												get_zoffset_value();
+												pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
+												//M105:
+												if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')
+												{
+													usart2Data.prWaitStatus = pr_wait_idle;
+													prTxNext();
+												}
+											}												
+											break;
+										case pr_wait_data:
 
-								usart2Data.rxP = &usart2Data.usart2Rxbuf[0];
-							//memset(&usart2Data.usart2Rxbuf[0],0,sizeof(usart2Data.usart2Rxbuf));		//test_add
-						}
+											if(firmwareType != repetier)
+											{
+												if(resendProcess()) break;
+											}
+											else
+											{
+												if(resendProcess_repetier()) break;
+											}
+											
+											if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')	
+											{
+												if(recOkProcess()) 
+												{
+													usart2Data.resendCnt = 0;
+													usart2Data.prWaitStatus = pr_wait_idle;
+													prTxNext();
+												}
+												else	//ok : T xxx
+													pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
+											}
+											else //收到其他，push 到CMD队列 非OK
+												pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
+											
+											break;
+										default : break;
+									} //switch(usart2Data.prWaitStatus) 
+								break;
+							case pr_idle:		//	pr_idle=0				//非打印中 ,发送命令由外部查询gcodeCmdTxFIFO非空，启动发送
+							case pr_stop:		//	pr_stop=3
+									if(usart2Data.usart2Rxbuf[0] =='o' &&  usart2Data.usart2Rxbuf[1] =='k')
+									{
+										usart2Data.prWaitStatus = pr_wait_idle;
+										usart2Data.timer = timer_stop;		//0303
+										//sean 12.17
+										if((usart2Data.usart2Txbuf[0] =='G' &&  usart2Data.usart2Txbuf[1] =='2' && usart2Data.usart2Txbuf[2] =='8' && usart2Data.HasSendHomeG28 ==1)
+											|| (usart2Data.usart2Txbuf[0] =='N' &&  usart2Data.usart2Txbuf[1] =='-' && usart2Data.usart2Txbuf[2] =='1' && usart2Data.HasStopPrintSendG28 == 1))
+										{
+											usart2Data.HasStopPrintSendG28 = 0;
+											usart2Data.HasSendHomeG28 = 0;
+										}
+									}
+									pushFIFO(&gcodeCmdRxFIFO,&usart2Data.usart2Rxbuf[0]);
+									break;							
+							default :break;															
+							}//switch(printerStaus)
+
+							usart2Data.rxP = &usart2Data.usart2Rxbuf[0];
+						//memset(&usart2Data.usart2Rxbuf[0],0,sizeof(usart2Data.usart2Rxbuf));		//test_add
+					}
 				}
 				if(usart2Data.rxP >= &usart2Data.usart2Rxbuf[0] + USART2BUFSIZE-1)
 					usart2Data.rxP = &usart2Data.usart2Rxbuf[0];

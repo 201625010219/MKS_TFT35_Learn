@@ -11,23 +11,23 @@
  extern "C" {
 #endif
 
-#define FIFO_NODE	15//10		//FIFO深度,节点�?�?
+#define FIFO_NODE	15              //10		//FIFO深度,节点�?�?
 #define FIFO_SIZE	100		//FIFO宽度,节点长度
 
 
 typedef enum
 {
-	fifo_empty = 0,		// 	FIFO �?
-	fifo_full,			//	FIFO �?
-	fifo_ok,
+	fifo_empty = 0,		// FIFO��
+	fifo_full,	        // FIFO��
+	fifo_ok,                // 
 	fifo_err,										 
 } FIFO_STATUS;
 
 typedef struct _FIFO
 {
-    unsigned char       *head;		//指向FIFO的头节点
-    unsigned char       *tail; 	//指向FIFO的尾节点
-    FIFO_STATUS    	 status;	// FIFO 状�?
+    unsigned char       *head;		//ͷ֡
+    unsigned char       *tail; 	        //β֡
+    FIFO_STATUS    	 status;	//FIFO״̬
     unsigned char 	 buffer[FIFO_NODE][FIFO_SIZE];
     unsigned char       *p;		//
     unsigned char       count;			

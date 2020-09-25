@@ -54,8 +54,8 @@ FIFO_STATUS pushFIFO(TFT_FIFO *fifo,unsigned char *src)
 		USART_SendData(USART3,*src);
         	src++;    
    	}   
-
 	USART_SendData(USART3,0xee);*/
+
 }
 
 FIFO_STATUS popFIFO(TFT_FIFO *fifo,unsigned char *dst)
@@ -68,6 +68,7 @@ FIFO_STATUS popFIFO(TFT_FIFO *fifo,unsigned char *dst)
 		while(*(fifo->p) != '\n')
 		{
 			*dst++ = *(fifo->p)++;
+
 			if(fifo->p >= (fifo->head + FIFO_SIZE))
 			{
 				fifo->count--;
@@ -76,8 +77,11 @@ FIFO_STATUS popFIFO(TFT_FIFO *fifo,unsigned char *dst)
 			}
 		}
 		*dst++ = '\n';
+
 		fifo->count--;
+
 		fifo->head = (fifo->head == fifo->buffer[FIFO_NODE-1])? fifo->buffer[0]:fifo->head +FIFO_SIZE;
+		
 		return fifo_ok;
 	}
 }

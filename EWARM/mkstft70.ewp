@@ -1956,7 +1956,7 @@
     <group>
       <name>EWARM</name>
       <file>
-        <name>$PROJ_DIR$\..\Drivers\CMSIS\Device\ST\STM32F4xx\Source\Templates\iar\startup_stm32f407xx.s</name>
+        <name>$PROJ_DIR$\startup_stm32f407xx.s</name>
       </file>
     </group>
     <group>
