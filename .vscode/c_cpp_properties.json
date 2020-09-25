@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "F:\\sola_github\\work3\\mks_TFT70 V1.0.0/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE",
+                "USE_HAL_DRIVER",
+                "STM32F407xx",
+                "STM32F40_41xxx",
+                "USE_HAL_LIB",
+                "TFT35"
+            ],
+            "compilerPath": "C:\\mingw32\\bin\\gcc.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "gcc-x86"
+        }
+    ],
+    "version": 4
+}

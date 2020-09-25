@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Project>
+  <Desktop>
+    <Static>
+      <Debug-Log>
+        
+        
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Build</Factory></Window><Window><Factory>Find-in-Files</Factory></Window></Windows></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1861</ColumnWidth1></Debug-Log>
+      <Build>
+        
+        
+        
+        
+      <PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>Find-in-Files</Factory></Window></Windows></PreferedWindows><ColumnWidth0>20</ColumnWidth0><ColumnWidth1>1395</ColumnWidth1><ColumnWidth2>372</ColumnWidth2><ColumnWidth3>93</ColumnWidth3></Build>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>41</Column0><Column1>27</Column1><Column2>27</Column2><Column3>27</Column3></ColumnWidths>
+      </Workspace>
+      <Disassembly>
+        <col-names>
+          
+          
+        <item>Disassembly</item><item>_I0</item></col-names>
+        <col-widths>
+          
+          
+        <item>500</item><item>20</item></col-widths>
+        <DisasmHistory><item>0x0802FC5D</item></DisasmHistory>
+        
+        
+      <PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><ShowCodeCoverage>1</ShowCodeCoverage><ShowInstrProfiling>1</ShowInstrProfiling></Disassembly>
+    <WATCH_1><expressions><item>buff_pic</item><item>gCfgItems.btn_text_offset</item><item>buff_pixel</item><item>p_index</item><item>gcodeTxFIFO</item><item>udiskBuffer.buffer</item><item>x</item><item>file</item><item>srcfp</item><item>y_touch</item><item>RePrintData.spayerchoose</item><item>gTouchEvent.y</item><item>RePrintData.t0Temp</item><item>par1</item><item>gcodeTxFIFO</item><item>gCfgItems.curSprayerChoose</item><item>To_pre_view</item><item>tempBuf</item><item>gcodeCmdRxFIFO</item><item>gcodeCmdTxFIFO</item><item>gcodeTxFIFO</item><item>usart2Data.usart2Txbuf</item><item>pre_read_cnt</item><item>i</item><item>disk.is_initialized</item><item>pdrv</item><item>disk.drv</item><item>disk.lun</item><item>gCfgItems.z_display_pos</item><item>gCfgItems.z_display_pos_bak</item><item>gCfgItems.F_speed</item><item>par1</item><item>par2</item><item>par3</item><item>par4</item><item>par5</item><item>par6</item><item>gCfgItems.rePrintFlag</item><item>tmp_reprint_flag</item><item>TER_R</item><item>cmd_code</item><item>name</item><item>path</item><item>fs</item><item>path</item><item>USBH_Path</item><item>disk.is_initialized</item><item>disk</item><item>WifiRxFifo</item><item>srcfp-&gt;fptr</item><item>(srcfp)-&gt;fsize</item><item>srcfp_fptr</item><item>fptr_Int</item><item>fptr_remainder</item><item/></expressions><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>217</item><item>150</item><item>83</item><item>361</item></col-widths><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></WATCH_1><Find-in-Files><ColumnWidth0>569</ColumnWidth0><ColumnWidth1>94</ColumnWidth1><ColumnWidth2>854</ColumnWidth2><ColumnWidth3>379</ColumnWidth3></Find-in-Files><CallStack><col-names><item>Frame</item><item>_I0</item></col-names><col-widths><item>400</item><item>20</item></col-widths><PreferedWindows><Position>1</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></CallStack><Register><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows></Register><Memory><PreferedWindows><Position>3</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows><FindDirection>1</FindDirection><FindAsHex>0</FindAsHex></Memory><Locals><col-names><item>Location</item><item>Type</item><item>Value</item><item>Variable</item></col-names><col-widths><item>150</item><item>100</item><item>100</item><item>100</item></col-widths><PreferedWindows><Position>2</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows><Window><Factory>WATCH_1</Factory></Window></Windows></PreferedWindows></Locals><WATCH_2><expressions><item>srcfp</item><item>udiskBuffer.buffer</item><item>srcfp_fptr</item><item>udiskBuffer.mid_buffer</item><item>gCfgItems.overturn_180</item><item>gCfgItems.baby_step_display_flg</item><item>filesys_menu.sd_sys</item><item>wifiPara.mode</item><item>Pic_cnt</item><item>cmd_code</item><item>pBuffer</item><item>autoLevelCmd</item><item>testLen</item><item>gCfgItems.fileSysType</item><item></item></expressions><col-names><item>Expression</item><item>Location</item><item>Type</item><item>Value</item></col-names><col-widths><item>186</item><item>150</item><item>100</item><item>227</item></col-widths></WATCH_2></Static>
+    <Windows>
+      
+      
+      
+    <Wnd0>
+        <Tabs>
+          
+          
+        <Tab><Identity>TabID-9754-15204</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab><Tab><Identity>TabID-21212-24994</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
+        
+      <SelectedTab>1</SelectedTab></Wnd0><Wnd3>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-13612-4012</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>mkstft70</ExpandedNode><ExpandedNode>mkstft70/Application</ExpandedNode><ExpandedNode>mkstft70/Application/User</ExpandedNode><ExpandedNode>mkstft70/Application/User/UI</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd3><Wnd4><Tabs><Tab><Identity>TabID-13320-29445</Identity><TabName>Watch 1</TabName><Factory>WATCH_1</Factory></Tab><Tab><Identity>TabID-9417-19628</Identity><TabName>Watch 2</TabName><Factory>WATCH_2</Factory></Tab></Tabs><SelectedTab>1</SelectedTab></Wnd4><Wnd5><Tabs><Tab><Identity>TabID-1420-8906</Identity><TabName>Disassembly</TabName><Factory>Disassembly</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd5></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane/><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-0114C218><key>iaridepm.enu1</key></Toolbar-0114C218></Sizes></Row0><Row1><Sizes><Toolbar-17D2E758><key>armjlink.enu1</key></Toolbar-17D2E758></Sizes></Row1><Row2><Sizes><Toolbar-17D2BDF0><key>debuggergui.enu1</key></Toolbar-17D2BDF0></Sizes></Row2></Top><Left><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>547</Bottom><Right>132</Right><x>-2</x><y>-2</y><xscreen>3996</xscreen><yscreen>3084</yscreen><sizeHorzCX>3794872</sizeHorzCX><sizeHorzCY>4079365</sizeHorzCY><sizeVertCX>127255</sizeVertCX><sizeVertCY>726190</sizeVertCY></Rect></Wnd3></Sizes></Row0></Left><Right><Row0><Sizes><Wnd4><Rect><Top>-2</Top><Left>-2</Left><Bottom>547</Bottom><Right>172</Right><x>-2</x><y>-2</y><xscreen>610</xscreen><yscreen>1014</yscreen><sizeHorzCX>579297</sizeHorzCX><sizeHorzCY>1341270</sizeHorzCY><sizeVertCX>165242</sizeVertCX><sizeVertCY>726190</sizeVertCY></Rect></Wnd4></Sizes></Row0><Row1><Sizes><Wnd5><Rect><Top>-2</Top><Left>170</Left><Bottom>547</Bottom><Right>230</Right><x>170</x><y>-2</y><xscreen>60</xscreen><yscreen>108</yscreen><sizeHorzCX>56980</sizeHorzCX><sizeHorzCY>142857</sizeHorzCY><sizeVertCX>56980</sizeVertCX><sizeVertCY>726190</sizeVertCY></Rect></Wnd5></Sizes></Row1></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>116</Bottom><Right>1055</Right><x>-2</x><y>-2</y><xscreen>1057</xscreen><yscreen>118</yscreen><sizeHorzCX>1003799</sizeHorzCX><sizeHorzCY>156085</sizeHorzCY><sizeVertCX>3794872</sizeVertCX><sizeVertCY>4079365</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Project>
+
+

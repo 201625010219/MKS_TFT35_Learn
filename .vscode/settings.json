@@ -1,0 +1,13 @@
+{   
+    "files.associations": {
+        "MKS_USART2_IT.C": "cpp",
+        "mks_tft_gcode.C": "cpp",
+        "cmath": "cpp"
+        
+    },
+    "settings": {
+
+        "terminal.integrated.shell.windows": "D:\\Program Files\\Git\\bin\\bash.exe"
+    },
+    "git.ignoreLimitWarning": true,
+}
